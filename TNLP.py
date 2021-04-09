@@ -2,23 +2,27 @@ import pandas as pd
 import numpy as np
 import nltk
 import re
-from nltk import word_tokenize, sent_tokenize
-from tqdm import tqdm
+import gensim
+import matplotlib.pyplot as plt
+from nltk import word_tokenize
+from tensorflow import keras
 from sklearn import metrics
 from sklearn.metrics import plot_confusion_matrix
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.linear_model import SGDClassifier
+from nltk.stem import *
 from nltk.corpus import stopwords
 from string import punctuation
 from sklearn.pipeline import Pipeline
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.feature_extraction.text import TfidfTransformer
-from sklearn.linear_model import SGDClassifier, LogisticRegression
+
 stopwordsEn = stopwords.words('english')
-from nltk.corpus import wordnet
 nltk.download('wordnet')
-from nltk.stem import *
 
 cus_stopwords = set(stopwords.words('english') + list(punctuation) + ['AT_USER', 'URL'])
 target_names = ['positive', 'negative', 'neutral']
+
+MORPHOLOGY_CHOICE = 3
 
 
 def main():
@@ -51,28 +55,72 @@ def main():
         ('clf', SGDClassifier())
     ])
 
-    text_clf.fit(training_tweets[:, 0], training_tweets[:, 1])
+    print(training_tweets[:,0])
 
-    predicted = text_clf.predict(training_tweets[:, 0])
+    # :,0 used to get the tweet column from training_tweets
+    # get_word2vec(training_tweets[:, 0])
 
-    print("Accuracy:", metrics.accuracy_score(training_tweets[:, 1], predicted))
-
-    print(metrics.classification_report(training_tweets[:, 1], predicted, target_names=target_names))
-
-    print(pd.DataFrame(metrics.confusion_matrix(training_tweets[:, 1], predicted), columns=target_names, index=target_names))
+    # text_clf.fit(training_tweets[:, 0], training_tweets[:, 1])
+    #
+    # predicted = text_clf.predict(training_tweets[:, 0])
+    #
+    # print("Accuracy:", metrics.accuracy_score(training_tweets[:, 1], predicted))
+    #
+    # print(metrics.classification_report(training_tweets[:, 1], predicted, target_names=target_names))
+    #
+    # print(pd.DataFrame(metrics.confusion_matrix(training_tweets[:, 1], predicted), columns=target_names, index=target_names))
+    #
+    # df_pred = pd.DataFrame({"tweet": training_tweets[:, 0], 'Prediction': predicted, 'true:': training_tweets[:, 1]})
 
 
 # Text normalisation / cleaning
 def process_tweet(tweet):
-    for words in tweet:
-        tweet = words.lower()
-        tweet = words.lower()  # convert text to lower-case
-        tweet = re.sub('((www\.[^\s]+)|(https?://[^\s]+))', 'URL', words)  # remove URLs
-        tweet = re.sub('@[^\s]+', 'AT_USER', words)  # remove usernames
-        tweet = re.sub(r'#([^\s]+)', r'\1', words)  # remove the # in #hashtag
-        tweet = word_tokenize(tweet)  # remove repeated characters
+    tweet = tweet.lower()
+    tweet = tweet.lower()  # convert text to lower-case
+    tweet = re.sub('((www\.[^\s]+)|(https?://[^\s]+))', 'URL', tweet)  # remove URLs
+    tweet = re.sub('@[^\s]+', 'AT_USER', tweet)  # remove usernames
+    tweet = re.sub(r'#([^\s]+)', r'\1', tweet)  # remove the # in #hashtag
+    tweet = word_tokenize(tweet)  # remove repeated characters
 
-    return [word for word in tweet if word not in cus_stopwords]
+    filtered_words = [word for word in tweet if word not in cus_stopwords]
+
+    # Stemming
+    if MORPHOLOGY_CHOICE == 1:
+        ps = PorterStemmer()
+        stemmed_words = [ps.stem(word) for word in filtered_words]
+        return " ".join(stemmed_words)
+    # Lemmatization
+    elif MORPHOLOGY_CHOICE == 2:
+        lemmatizer = WordNetLemmatizer()
+        lemma_words = [lemmatizer.lemmatize(w, pos='a') for w in filtered_words]
+        return " ".join(lemma_words)
+    elif MORPHOLOGY_CHOICE == 3:
+        return filtered_words
+
+# def pos_tagging():
+
+
+
+# Word to Vector Function
+def get_word2vec(sentences):
+    num_features = 200
+    epoch_count = 15
+    sentence_count = len(sentences)
+    min_count = 1
+
+    word2vec = gensim.models.Word2Vec(sg=1, seed=1, vector_size=num_features, min_count=min_count,
+                                      window=5, sample=0)
+    print("Building vocab...")
+
+    word2vec.build_vocab(sentences)
+    print("Word2Vec Vocab Length: ", len(word2vec.wv.key_to_index))
+
+    print("Training...")
+    word2vec.train(sentences, total_examples=sentence_count, epochs=epoch_count)
+
+    print(word2vec.wv.key_to_index)
+
+    return word2vec
 
 
 if __name__ == "__main__":

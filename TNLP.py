@@ -3,12 +3,13 @@ import numpy as np
 import nltk
 import re
 import gensim
+import SentimentAnalysis as sa
 import matplotlib.pyplot as plt
-from nltk import word_tokenize
+from nltk import word_tokenize, pos_tag
 from tensorflow import keras
 from sklearn import metrics
-from sklearn.metrics import plot_confusion_matrix
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.linear_model import SGDClassifier
 from nltk.stem import *
@@ -22,11 +23,11 @@ nltk.download('wordnet')
 cus_stopwords = set(stopwords.words('english') + list(punctuation) + ['AT_USER', 'URL'])
 target_names = ['positive', 'negative', 'neutral']
 
-MORPHOLOGY_CHOICE = 3
+MORPHOLOGY_CHOICE = 1
 
 
 def main():
-    # This code takes the data to a CSV, and then converts it into a dictionary
+    # Takes the data to a CSV, and then converts it into a dictionary
     training_df = pd.read_csv("dataset/train.csv")
     training_dict = training_df.to_dict('records')
 
@@ -40,6 +41,7 @@ def main():
     processed_dev_tweets = []
     processed_test_tweets = []
 
+    # Fills array (for column access) with the normalised tweets
     for tweet in training_dict:
         processed_training_tweets.append((process_tweet(tweet["text"]), tweet["airline_sentiment"]))
     for tweet in dev_dict:
@@ -48,6 +50,11 @@ def main():
         processed_test_tweets.append((process_tweet(tweet["text"]), tweet["airline_sentiment"]))
 
     training_tweets = np.array(processed_training_tweets)
+    dev_tweets = np.array(processed_dev_tweets)
+    test_tweets = np.array(processed_test_tweets)
+
+
+    print("Text processing complete, result: ", training_tweets[3])
 
     text_clf = Pipeline([
         ('vect', CountVectorizer(analyzer=process_tweet)),
@@ -55,27 +62,42 @@ def main():
         ('clf', SGDClassifier())
     ])
 
-    print(training_tweets[:,0])
+    # tagged_tweets = pos_tagging(training_tweets[:, 0])
+    #
+    # tagged_tweets = np.array(tagged_tweets)
 
     # :,0 used to get the tweet column from training_tweets
-    # get_word2vec(training_tweets[:, 0])
+    # X_train
+    word2vec = get_word2vec(training_tweets[:, 0])
 
+    word2vec_clf = Pipeline([
+        ('vect', CountVectorizer(analyzer=process_tweet)),
+        ('tfidf', TfidfTransformer(use_idf=True)),
+        ('clf', DecisionTreeClassifier())
+    ])
+
+    # Training the model using word2vec
+    word2vec_clf.fit(training_tweets[:, 0], training_tweets[:, 1])
+
+    # Training the model
     # text_clf.fit(training_tweets[:, 0], training_tweets[:, 1])
-    #
-    # predicted = text_clf.predict(training_tweets[:, 0])
-    #
-    # print("Accuracy:", metrics.accuracy_score(training_tweets[:, 1], predicted))
-    #
-    # print(metrics.classification_report(training_tweets[:, 1], predicted, target_names=target_names))
-    #
-    # print(pd.DataFrame(metrics.confusion_matrix(training_tweets[:, 1], predicted), columns=target_names, index=target_names))
-    #
-    # df_pred = pd.DataFrame({"tweet": training_tweets[:, 0], 'Prediction': predicted, 'true:': training_tweets[:, 1]})
+
+    # Calculate and display IDF values
+    # df_idf = pd.DataFrame(text_clf['tfidf'].idf_, index=text_clf['vect'].get_feature_names(), columns=["idf_weights"])
+    # df_idf.sort_values(by=["idf_weights"])
+    # print(df_idf)
+
+    predicted = word2vec_clf.predict(dev_tweets[:, 0])
+
+    print("Accuracy:", metrics.accuracy_score(dev_tweets[:, 1], predicted))
+    print(metrics.classification_report(dev_tweets[:, 1], predicted, target_names=target_names))
+    print(pd.DataFrame(metrics.confusion_matrix(dev_tweets[:, 1], predicted), columns=target_names, index=target_names))
+    df_pred = pd.DataFrame({"tweet": dev_tweets[:, 0], 'Prediction': predicted, 'true:': dev_tweets[:, 1]})
+    print(df_pred.head())
 
 
 # Text normalisation / cleaning
 def process_tweet(tweet):
-    tweet = tweet.lower()
     tweet = tweet.lower()  # convert text to lower-case
     tweet = re.sub('((www\.[^\s]+)|(https?://[^\s]+))', 'URL', tweet)  # remove URLs
     tweet = re.sub('@[^\s]+', 'AT_USER', tweet)  # remove usernames
@@ -86,19 +108,31 @@ def process_tweet(tweet):
 
     # Stemming
     if MORPHOLOGY_CHOICE == 1:
+        print("Stemming...")
         ps = PorterStemmer()
         stemmed_words = [ps.stem(word) for word in filtered_words]
         return " ".join(stemmed_words)
     # Lemmatization
     elif MORPHOLOGY_CHOICE == 2:
+        print("Getting lemma...")
         lemmatizer = WordNetLemmatizer()
         lemma_words = [lemmatizer.lemmatize(w, pos='a') for w in filtered_words]
         return " ".join(lemma_words)
     elif MORPHOLOGY_CHOICE == 3:
         return filtered_words
 
-# def pos_tagging():
 
+def pos_tagging(tweets):
+    print("POS tagging...")
+    tagged_tweets = []
+    for tweet in tweets:
+        print(tweet)
+        pos_tag_tweet = pos_tag(tweet)
+        print(pos_tag_tweet)
+        tagged_tweets.append((pos_tag_tweet[0], pos_tag_tweet[1]))
+
+    print("Work complete. Example: ", tagged_tweets[1])
+    return tagged_tweets
 
 
 # Word to Vector Function

@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="24755042-d440-4eb5-ba4b-f0b4033398a6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PreProcessTweets.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Python Natural Language Processing.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Python Natural Language Processing.docx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/TNLP.py" beforeDir="false" afterPath="$PROJECT_DIR$/TNLP.py" afterDir="false" />
     </list>
@@ -14,7 +12,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/Coursework$TNLP.coverage" NAME="TNLP Coverage Results" MODIFIED="1618216494440" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Coursework$TNLP.coverage" NAME="TNLP Coverage Results" MODIFIED="1618220412855" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FUSProjectUsageTrigger">
     <session id="-2091671788">
@@ -30,12 +28,12 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="15791" />
+          <entry key="py" value="15972" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="15791" />
+          <entry key="Python" value="15972" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -58,11 +56,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/TNLP.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="117">
-              <caret line="94" column="99" selection-start-line="94" selection-start-column="99" selection-end-line="94" selection-end-column="99" />
+            <state relative-caret-position="326">
+              <caret line="25" column="21" selection-start-line="25" selection-start-column="21" selection-end-line="25" selection-end-column="21" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
-                <marker date="1618216492822" expanded="true" signature="2304:2354" ph="..." />
+                <marker date="1618220411146" expanded="true" signature="2401:2453" ph="..." />
               </folding>
             </state>
           </provider>
@@ -119,8 +117,9 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="25" />
-    <option name="width" value="1680" />
+    <option name="x" value="-1911" />
+    <option name="y" value="-122" />
+    <option name="width" value="1911" />
     <option name="height" value="1025" />
   </component>
   <component name="ProjectView">
@@ -210,15 +209,15 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="25" width="1680" height="1025" extended-state="6" />
+    <frame x="-1911" y="-122" width="1911" height="1025" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.092185594" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.08079187" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.6074481" visible="true" weight="0.4142395" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.67950773" visible="true" weight="0.44768068" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.498779" weight="0.399137" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -226,7 +225,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.3925519" side_tool="true" visible="true" weight="0.4142395" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.32049224" side_tool="true" visible="true" weight="0.44768068" />
       <window_info anchor="bottom" id="Terminal" order="11" />
       <window_info anchor="bottom" id="Python Console" order="12" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -368,11 +367,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/TNLP.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="117">
-          <caret line="94" column="99" selection-start-line="94" selection-start-column="99" selection-end-line="94" selection-end-column="99" />
+        <state relative-caret-position="326">
+          <caret line="25" column="21" selection-start-line="25" selection-start-column="21" selection-end-line="25" selection-end-column="21" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
-            <marker date="1618216492822" expanded="true" signature="2304:2354" ph="..." />
+            <marker date="1618220411146" expanded="true" signature="2401:2453" ph="..." />
           </folding>
         </state>
       </provider>

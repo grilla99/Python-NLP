@@ -11,7 +11,7 @@ from sklearn import metrics
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.feature_extraction.text import TfidfTransformer
-from sklearn.linear_model import SGDClassifier
+from sklearn.linear_model import SGDClassifier, LogisticRegression
 from nltk.stem import *
 from nltk.corpus import stopwords
 from string import punctuation
@@ -23,7 +23,7 @@ nltk.download('wordnet')
 cus_stopwords = set(stopwords.words('english') + list(punctuation) + ['AT_USER', 'URL'])
 target_names = ['positive', 'negative', 'neutral']
 
-MORPHOLOGY_CHOICE = 1
+MORPHOLOGY_CHOICE = 2
 
 
 def main():
@@ -59,8 +59,10 @@ def main():
     text_clf = Pipeline([
         ('vect', CountVectorizer(analyzer=process_tweet)),
         ('tfidf', TfidfTransformer(use_idf=True)),
-        ('clf', SGDClassifier())
+        ('clf', LogisticRegression())
     ])
+
+    model = text_clf.fit(training_tweets[:, 0], training_tweets[:, 1])
 
     # tagged_tweets = pos_tagging(training_tweets[:, 0])
     #
@@ -68,26 +70,26 @@ def main():
 
     # :,0 used to get the tweet column from training_tweets
     # X_train
-    word2vec = get_word2vec(training_tweets[:, 0])
+    # word2vec = get_word2vec(training_tweets[:, 0])
 
-    word2vec_clf = Pipeline([
-        ('vect', CountVectorizer(analyzer=process_tweet)),
-        ('tfidf', TfidfTransformer(use_idf=True)),
-        ('clf', DecisionTreeClassifier())
-    ])
+    # word2vec_clf = Pipeline([
+    #     ('vect', CountVectorizer(analyzer=process_tweet)),
+    #     ('tfidf', TfidfTransformer(use_idf=True)),
+    #     ('clf', DecisionTreeClassifier())
+    # ])
 
     # Training the model using word2vec
-    word2vec_clf.fit(training_tweets[:, 0], training_tweets[:, 1])
+    # word2vec_clf.fit(training_tweets[:, 0], training_tweets[:, 1])
 
     # Training the model
     # text_clf.fit(training_tweets[:, 0], training_tweets[:, 1])
 
     # Calculate and display IDF values
-    # df_idf = pd.DataFrame(text_clf['tfidf'].idf_, index=text_clf['vect'].get_feature_names(), columns=["idf_weights"])
-    # df_idf.sort_values(by=["idf_weights"])
-    # print(df_idf)
+    df_idf = pd.DataFrame(model['tfidf'].idf_, index=model['vect'].get_feature_names(), columns=["idf_weights"])
+    df_idf.sort_values(by=["idf_weights"])
+    print(df_idf)
 
-    predicted = word2vec_clf.predict(dev_tweets[:, 0])
+    predicted = text_clf.predict(dev_tweets[:, 0])
 
     print("Accuracy:", metrics.accuracy_score(dev_tweets[:, 1], predicted))
     print(metrics.classification_report(dev_tweets[:, 1], predicted, target_names=target_names))
